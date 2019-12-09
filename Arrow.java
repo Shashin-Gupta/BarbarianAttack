@@ -1,4 +1,4 @@
-package jrJava.barbarianAttack3_linkedList;
+package jrJava.barbarianAttack4;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -13,6 +13,14 @@ public class Arrow {
 	private boolean isCollided;
 	private static Image eImage;
 	private static int eWidth, eHeight;
+	private int id;
+	
+	static {
+		eImage = new ImageIcon(Coordinator.R_PATH + "explosion.png").getImage();
+		eWidth = eImage.getWidth(null);
+		eHeight = eImage.getHeight(null);
+	}
+	
 	
 	public Arrow(double x, double y, double vx, double vy, double length) {
 		super();
@@ -21,17 +29,26 @@ public class Arrow {
 		this.vx = vx;
 		this.vy = vy;
 		this.length = length;
+		id = ++ArrowManager.numArrows;
 	}
 	
-	static {
-		eImage = new ImageIcon(Coordinator.R_PATH + "explosion.png").getImage();
-		eWidth = eImage.getWidth(null);
-		eHeight = eImage.getHeight(null);
+	public void reset(double x, double y, double vx, double vy, double length) {
+		this.x = x;
+		this.y = y;
+		this.vx = vx;
+		this.vy = vy;
+		this.length = length;
+		isCollided = false;
 	}
 	
 	public double getX() { return x; }
 	public double getY() { return y; }
-	public boolean isCollided() {return isCollided;}
+	
+	public boolean isCollided() { return isCollided; }
+	
+	public String toString() {
+		return String.valueOf(id);
+	}
 	
 	public void move() {
 		for(int i=0; i<10; i++) {
@@ -40,7 +57,7 @@ public class Arrow {
 			vy += gravity/10;
 			
 			if(BarbarianManager.isHit(this)) {
-				isCollided = true; 
+				isCollided = true;
 			}
 		}
 	}
@@ -51,16 +68,10 @@ public class Arrow {
 		double hyp = Math.sqrt(vx*vx + vy*vy);
 		g.drawLine((int)x, (int)y, (int)(x + length*vx/hyp), (int)(y + length*vy/hyp));
 		
-		if (isCollided) {
-			g.drawImage(eImage, (int)x - eWidth/2, (int)y - eHeight, null);
-			// ArrowManager.remove(this);
-			
+		if(isCollided) {
+			g.drawImage(eImage, (int)x-eWidth/2, (int)y-eHeight/2, null);
+			//ArrowManager.remove(this); 
 		}
 	}
 	
 }
-
-
-
-
-
